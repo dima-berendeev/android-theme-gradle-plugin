@@ -1,8 +1,13 @@
-
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("org.berendeev.android.theme-plugin")
+}
+
+
+theme {
+    generatedCodeFolder = project.layout.projectDirectory.dir("src/main/java")
+    packageName = "org.berendeev.android.themeplugin.ui.theme"
 }
 
 android {
