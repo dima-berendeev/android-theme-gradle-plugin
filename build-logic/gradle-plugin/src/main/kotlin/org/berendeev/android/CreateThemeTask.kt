@@ -42,7 +42,7 @@ abstract class CreateThemeTask : DefaultTask() {
                 it.write(
                     """
                 val ${colorSchema.name} = $scheme(
-                    primary = Color(${colorSchema.primary.get()}U),
+                    primary = Color(0x${colorSchema.primary.get().toString(16)}),
                     secondary = PurpleGrey40,
                     tertiary = Pink40
                 )

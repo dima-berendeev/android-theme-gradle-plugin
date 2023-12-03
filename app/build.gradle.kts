@@ -3,6 +3,11 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("org.berendeev.android.theme-plugin")
 }
+afterEvaluate {
+    tasks.named("compileDebugKotlin") {
+        dependsOn("createTheme")
+    }
+}
 
 theme {
     generatedCodeFolder = project.layout.projectDirectory.dir("src/main/java")
@@ -10,7 +15,8 @@ theme {
     colorSchemas {
         create("LightColorScheme") {
             lightScheme = true
-            primary = 0xff00ff00U
+//            primary = 0xff00ff00U
+            primary = 0xffff0000U
         }
         create("DarkColorScheme") {
             lightScheme = false
