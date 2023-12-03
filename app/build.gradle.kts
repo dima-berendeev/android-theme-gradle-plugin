@@ -4,10 +4,19 @@ plugins {
     id("org.berendeev.android.theme-plugin")
 }
 
-
 theme {
     generatedCodeFolder = project.layout.projectDirectory.dir("src/main/java")
     packageName = "org.berendeev.android.themeplugin.ui.theme"
+    colorSchemas {
+        create("LightColorScheme") {
+            lightScheme = true
+            primary = 0xff00ff00U
+        }
+        create("DarkColorScheme") {
+            lightScheme = false
+            primary = 0xffff0000U
+        }
+    }
 }
 
 android {

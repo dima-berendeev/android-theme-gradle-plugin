@@ -2,6 +2,7 @@ package org.berendeev.android
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputDirectory
@@ -14,6 +15,9 @@ abstract class CreateThemeTask : DefaultTask() {
     @get:Input
     abstract val packageName: Property<String>
 
+    @get:Input
+    abstract val colorSchemas: ListProperty<ColorScheme>
+
     @TaskAction
     fun action() {
         val file = sourcesFolder.file("${packageName.get().replace(".", "/")}/GeneratedColorScheme.kt").get().asFile
@@ -25,20 +29,26 @@ abstract class CreateThemeTask : DefaultTask() {
                 
                 import androidx.compose.material3.darkColorScheme
                 import androidx.compose.material3.lightColorScheme
-                
-                val DarkColorScheme = darkColorScheme(
-                    primary = Purple80,
-                    secondary = PurpleGrey80,
-                    tertiary = Pink80
-                )
-    
-                val LightColorScheme = lightColorScheme(
-                    primary = Purple40,
+                import androidx.compose.ui.graphics.Color
+                """.trimIndent() + "\n\n"
+            )
+
+            colorSchemas.get().forEach { colorSchema ->
+                val scheme = if (colorSchema.lightScheme.get()) {
+                    "lightColorScheme"
+                } else {
+                    "darkColorScheme"
+                }
+                it.write(
+                    """
+                val ${colorSchema.name} = $scheme(
+                    primary = Color(${colorSchema.primary.get()}U),
                     secondary = PurpleGrey40,
                     tertiary = Pink40
                 )
-                """.trimIndent()
-            )
+                """.trimIndent() + "\n\n"
+                )
+            }
         }
     }
 }
