@@ -1,5 +1,7 @@
 package org.berendeev.android
 
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.decodeFromStream
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.provider.ListProperty
@@ -7,6 +9,7 @@ import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputDirectory
 import org.gradle.api.tasks.TaskAction
+import java.io.File
 
 abstract class CreateThemeTask : DefaultTask() {
     @get:InputDirectory
@@ -16,10 +19,16 @@ abstract class CreateThemeTask : DefaultTask() {
     abstract val packageName: Property<String>
 
     @get:Input
-    abstract val colorSchemas: ListProperty<ColorScheme>
+    abstract val themes: ListProperty<Theme>
+
 
     @TaskAction
     fun action() {
+        val decodedThemes: Map<String, ThemeDataJsonModel> = themes.get().map {
+            val data = fetchTheme(it.json.get().asFile)
+            it.name to data
+        }.toMap()
+
         val file = sourcesFolder.file("${packageName.get().replace(".", "/")}/GeneratedColorScheme.kt").get().asFile
         file.ensureParentDirsCreated()
         file.outputStream().writer().use {
@@ -33,22 +42,32 @@ abstract class CreateThemeTask : DefaultTask() {
                 """.trimIndent() + "\n\n"
             )
 
-            colorSchemas.get().forEach { colorSchema ->
-                val scheme = if (colorSchema.lightScheme.get()) {
-                    "lightColorScheme"
-                } else {
+            decodedThemes.forEach { (themeName, themeModel) ->
+                val scheme = if (themeModel.isDark) {
                     "darkColorScheme"
+                } else {
+                    "lightColorScheme"
                 }
                 it.write(
                     """
-                val ${colorSchema.name} = $scheme(
-                    primary = Color(0x${colorSchema.primary.get().toString(16)}),
-                    secondary = PurpleGrey40,
+                val $themeName = $scheme(
+                    primary = Color(0x${themeModel.colors.primary}),
+                    secondary = Color(0x${themeModel.colors.secondary}),
                     tertiary = Pink40
                 )
                 """.trimIndent() + "\n\n"
                 )
             }
+        }
+    }
+
+    private fun fetchTheme(file: File): ThemeDataJsonModel {
+        return json.decodeFromStream<ThemeDataJsonModel>(file.inputStream())
+    }
+
+    companion object {
+        val json = Json {
+            ignoreUnknownKeys = true
         }
     }
 }

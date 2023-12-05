@@ -12,15 +12,12 @@ afterEvaluate {
 theme {
     generatedCodeFolder = project.layout.projectDirectory.dir("src/main/java")
     packageName = "org.berendeev.android.themeplugin.ui.theme"
-    colorSchemas {
+    themes {
         create("LightColorScheme") {
-            lightScheme = true
-//            primary = 0xff00ff00U
-            primary = 0xffff0000U
+            json = project.layout.projectDirectory.file("app-theme-light.json")
         }
         create("DarkColorScheme") {
-            lightScheme = false
-            primary = 0xffff0000U
+            json = project.layout.projectDirectory.file("app-theme-dark.json")
         }
     }
 }

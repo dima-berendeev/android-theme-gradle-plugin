@@ -10,8 +10,8 @@ class ThemePlugin : Plugin<Project> {
         target.tasks.create<CreateThemeTask>("createTheme") {
             sourcesFolder.set(extension.generatedCodeFolder)
             packageName.set(extension.packageName)
-            extension.colorSchemas.all {
-                colorSchemas.add(this)
+            extension.themes.all {
+                themes.add(this)
             }
         }
     }
