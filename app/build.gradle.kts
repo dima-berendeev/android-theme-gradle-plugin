@@ -3,20 +3,14 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("org.berendeev.android.theme-plugin")
 }
-afterEvaluate {
-    tasks.named("compileDebugKotlin") {
-        dependsOn("createTheme")
-    }
-}
 
 theme {
-    generatedCodeFolder = project.layout.projectDirectory.dir("src/main/java")
     packageName = "org.berendeev.android.themeplugin.ui.theme"
     themes {
-        create("LightColorScheme") {
+        register("LightColorScheme") {
             json = project.layout.projectDirectory.file("app-theme-light.json")
         }
-        create("DarkColorScheme") {
+        register("DarkColorScheme") {
             json = project.layout.projectDirectory.file("app-theme-dark.json")
         }
     }

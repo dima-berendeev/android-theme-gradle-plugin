@@ -1,0 +1,2 @@
+[libraries]
+com-android-tools-build = { group = "com.android.tools.build", name = "gradle", version = "8.1.4" }

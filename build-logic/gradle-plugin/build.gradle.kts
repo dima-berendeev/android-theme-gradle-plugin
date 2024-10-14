@@ -4,6 +4,12 @@ plugins {
     kotlin("plugin.serialization") version "1.9.10"
 }
 
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
 
 gradlePlugin {
     plugins {
@@ -16,4 +22,5 @@ gradlePlugin {
 
 dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
+    implementation(libs.com.android.tools.build)
 }
